@@ -48,7 +48,6 @@
 
         h1 { color: #d90429; font-size: 1.8rem; }
         
-        /* Updated buttons layout to be side-by-side */
         .buttons { 
             display: flex; 
             justify-content: center; 
@@ -56,38 +55,34 @@
             align-items: center; 
             margin-top: 20px; 
             min-height: 100px;
-            position: relative;
         }
 
         button {
             padding: 15px 25px; font-size: 1.1rem; border: none; border-radius: 50px;
-            font-weight: bold; cursor: pointer; transition: transform 0.1s ease-out;
+            font-weight: bold; cursor: pointer; transition: transform 0.2s ease-out;
         }
 
-        #yesBtn { background-color: #d90429; color: white; z-index: 999; }
+        #yesBtn { 
+            background-color: #d90429; 
+            color: white; 
+            z-index: 999; /* This ensures it grows ON TOP of the No button */
+        }
         
-        /* Starting position is beside YES */
-        #noBtn { background-color: #8d99ae; color: white; z-index: 998; position: relative; }
+        #noBtn { 
+            background-color: #8d99ae; 
+            color: white; 
+            z-index: 998; 
+            position: relative; 
+        }
         
         #successMsg { display: none; color: #d90429; font-size: 2rem; font-weight: bold; }
-
-        #muteBtn {
-            position: fixed; bottom: 20px; right: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%; width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10001; font-size: 20px; cursor: pointer;
-            display: none;
-        }
     </style>
 </head>
 <body>
 
     <div id="overlay">
-        <button onclick="startExperience()" style="background:#d90429; color:white;">Click to Open ❤️</button>
+        <button onclick="startExperience()" style="background:#d90429; color:white;">Click to Open my love❤️</button>
     </div>
-
-    <div id="muteBtn" onclick="toggleMute()">🔊</div>
 
     <audio id="myAudio" loop>
         <source src="music.mp3" type="audio/mpeg">
@@ -97,11 +92,11 @@
     <div id="collage"></div>
 
     <div class="card" id="mainCard">
-        <h1 id="question">Hi bebe, Will you be my Valentine? ❤️</h1>
+        <h1 id="question">Hi bebe,Will you be my Valentine? ❤️</h1>
         <div id="successMsg">I LOVE YOU! SEE YOU SOON BB! 🥰✨</div>
         <div class="buttons" id="btnGroup">
             <button id="yesBtn" onclick="celebrate()">YES 😍</button>
-            <button id="noBtn" onmouseover="moveNo()">No 😡</button>
+            <button id="noBtn" onmouseover="growYes()">No 😡</button>
         </div>
     </div>
 
@@ -118,23 +113,11 @@
         ].map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
 
         const audio = document.getElementById('myAudio');
-        const muteBtn = document.getElementById('muteBtn');
 
         function startExperience() {
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('custom-cursor').style.display = 'block';
-            muteBtn.style.display = 'flex';
             audio.play().catch(e => console.log("Playback failed:", e));
-        }
-
-        function toggleMute() {
-            if (audio.muted) {
-                audio.muted = false;
-                muteBtn.innerText = "🔊";
-            } else {
-                audio.muted = true;
-                muteBtn.innerText = "🔇";
-            }
         }
 
         document.addEventListener('mousemove', (e) => {
@@ -155,21 +138,9 @@
         });
 
         let scale = 1;
-        function moveNo() {
-            const noBtn = document.getElementById('noBtn');
+        function growYes() {
             const yesBtn = document.getElementById('yesBtn');
-            
-            // Switch to fixed position ONLY once she tries to click it
-            noBtn.style.position = 'fixed';
-            
-            const padding = 50;
-            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
-            noBtn.style.left = Math.max(padding, Math.random() * maxX) + 'px';
-            noBtn.style.top = Math.max(padding, Math.random() * maxY) + 'px';
-
-            scale += 0.5;
+            scale += 0.2; // Grows very quickly
             yesBtn.style.transform = `scale(${scale})`;
         }
 
