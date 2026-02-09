@@ -15,11 +15,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Hide the default cursor */
-            cursor: none; 
+            cursor: none; /* Custom heart cursor */
         }
 
-        /* --- Custom Heart Cursor --- */
+        /* Custom Heart Cursor */
         #custom-cursor {
             position: fixed;
             top: 0;
@@ -42,12 +41,13 @@
 
         .collage-photo {
             position: absolute;
-            width: 160px;
-            height: 160px;
+            width: 150px;
+            height: 150px;
             object-fit: cover;
-            border: 8px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 6px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             border-radius: 2px;
+            background-color: white;
         }
 
         .card {
@@ -59,23 +59,24 @@
             text-align: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             backdrop-filter: blur(5px);
+            max-width: 350px;
         }
 
-        h1 { color: #d90429; }
+        h1 { color: #d90429; font-size: 1.8rem; margin-bottom: 20px; }
         
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 25px;
+            font-size: 1.1rem;
             border: none;
             border-radius: 50px;
-            cursor: none; /* Keep custom cursor on buttons */
+            cursor: none;
             font-weight: bold;
             transition: 0.2s;
         }
 
         #yesBtn { background-color: #d90429; color: white; }
         #noBtn { background-color: #8d99ae; color: white; position: relative; }
-        #successMsg { display: none; color: #d90429; font-size: 2rem; }
+        #successMsg { display: none; color: #d90429; font-size: 1.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -85,7 +86,7 @@
 
     <div class="card">
         <h1 id="question">Will you be my Valentine? ❤️</h1>
-        <div id="successMsg">I LOVE YOU! See you soon! 🥰</div>
+        <div id="successMsg">I LOVE YOU! See you soon my bebe! 🥰✨</div>
         
         <div class="buttons" id="btnGroup">
             <button id="yesBtn" onclick="celebrate()">YES</button>
@@ -94,34 +95,38 @@
     </div>
 
     <script>
-        // --- 1. YOUR IMAGES HERE ---
+        // --- 1. PROCESSED GOOGLE DRIVE LINKS ---
         const myImages = [
-            "https://images.unsplash.com/photo-1518199266791-5375a83190b7",
-            "https://images.unsplash.com/photo-1516589174184-c68526514b4c",
-            "https://images.unsplash.com/photo-1494972308845-d171197ede17",
-            "https://images.unsplash.com/photo-1523438885200-e635ba2c371e"
-        ];
+            "1TZIZow88MIW-Am1Tbwc_acgyaFdTGOfl", "1uO3mWpm6t0FgpQGRc6ZOsiohquyjOzIW", 
+            "1qZb3bVLW79chVg3NJeamGcUWs1VZKKfb", "1AqUbW_40AiROPG6QKP9dbc7uB7Lq_1Gu",
+            "18jfseUdDxvpp_UiNtRgegvhSUkQln1kf", "12iQB5epRbQDpOBKxnai4LbL2Qh2Qftph",
+            "1Mty27N_nRKMxGQW3LE2__mjZcozj8KMs", "1Hq2KtETlIOZxZmB81QeLuUO0Lsm1R2l9",
+            "1ZyuUwgBRZdHZdcYp2rWlGRGcllsQ42FY", "1zKHcXMfHpgDrtgYeIktYrogTS55dG1sa",
+            "1hshlR7_JWigM9i0ARCYrITAiDLamRmMD", "1kaBq59PQ0t5Lmkl6upztRX_T9m6xVO3p",
+            "14RCXd4yvPrBUkG7CWRx2qE7PHFqb_J9H", "1eRuSR_TUBgpx-5s23zBKdvL1yy7tzQVJ",
+            "1bYpxOYA9hxwSamQRRstar6dYQzut69a4"
+        ].map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
 
-        // --- 2. THE CUSTOM CURSOR LOGIC ---
+        // --- 2. CURSOR LOGIC ---
         const cursor = document.getElementById('custom-cursor');
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // --- 3. AUTO-COLLAGE GENERATOR ---
+        // --- 3. AUTO-COLLAGE ---
         const collageContainer = document.getElementById('collage');
         myImages.forEach((url) => {
             const img = document.createElement('img');
             img.src = url;
             img.className = 'collage-photo';
-            img.style.left = Math.random() * 80 + 5 + '%';
-            img.style.top = Math.random() * 80 + 5 + '%';
-            img.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+            img.style.left = Math.random() * 85 + '%';
+            img.style.top = Math.random() * 85 + '%';
+            img.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
             collageContainer.appendChild(img);
         });
 
-        // --- 4. THE INTERACTION ---
+        // --- 4. BUTTON INTERACTION ---
         let scale = 1;
         function moveNo() {
             const noBtn = document.getElementById('noBtn');
@@ -137,7 +142,7 @@
             document.getElementById('question').style.display = 'none';
             document.getElementById('btnGroup').style.display = 'none';
             document.getElementById('successMsg').style.display = 'block';
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#ff4d6d', '#ffffff'] });
         }
     </script>
 </body>
