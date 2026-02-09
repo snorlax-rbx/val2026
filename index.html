@@ -15,22 +15,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: none; /* Custom heart cursor */
+            cursor: none; 
         }
 
-        /* Custom Heart Cursor */
         #custom-cursor {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 30px;
-            height: 30px;
+            top: 0; left: 0; width: 30px; height: 30px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d90429"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
+            background-size: contain; background-repeat: no-repeat;
+            pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
         }
 
         #collage {
@@ -41,42 +34,46 @@
 
         .collage-photo {
             position: absolute;
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border: 6px solid white;
+            width: 150px; height: 150px;
+            object-fit: cover; border: 6px solid white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            border-radius: 2px;
-            background-color: white;
+            border-radius: 2px; background-color: white;
         }
 
         .card {
             position: relative;
             z-index: 10;
             background: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-            max-width: 350px;
+            padding: 40px; border-radius: 30px;
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px); max-width: 350px;
         }
 
-        h1 { color: #d90429; font-size: 1.8rem; margin-bottom: 20px; }
+        h1 { color: #d90429; font-size: 1.8rem; }
         
-        button {
-            padding: 15px 25px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: none;
-            font-weight: bold;
-            transition: 0.2s;
+        .buttons {
+            display: flex; justify-content: center;
+            gap: 20px; align-items: center; margin-top: 20px;
         }
 
-        #yesBtn { background-color: #d90429; color: white; }
-        #noBtn { background-color: #8d99ae; color: white; position: relative; }
-        #successMsg { display: none; color: #d90429; font-size: 1.8rem; font-weight: bold; }
+        button {
+            padding: 15px 25px; font-size: 1.1rem;
+            border: none; border-radius: 50px;
+            cursor: none; font-weight: bold;
+            transition: transform 0.1s ease-out; /* Smooth growth */
+        }
+
+        #yesBtn { 
+            background-color: #d90429; color: white; 
+            z-index: 999; /* Higher than card but lower than cursor */
+        }
+
+        #noBtn { 
+            background-color: #8d99ae; color: white; 
+            position: relative; z-index: 998;
+        }
+
+        #successMsg { display: none; color: #d90429; font-size: 2rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -84,9 +81,9 @@
     <div id="custom-cursor"></div>
     <div id="collage"></div>
 
-    <div class="card">
+    <div class="card" id="mainCard">
         <h1 id="question">Will you be my Valentine? ❤️</h1>
-        <div id="successMsg">I LOVE YOU! See you soon my bebe! 🥰✨</div>
+        <div id="successMsg">I LOVE YOU! 🥰✨</div>
         
         <div class="buttons" id="btnGroup">
             <button id="yesBtn" onclick="celebrate()">YES</button>
@@ -95,7 +92,6 @@
     </div>
 
     <script>
-        // --- 1. PROCESSED GOOGLE DRIVE LINKS ---
         const myImages = [
             "1TZIZow88MIW-Am1Tbwc_acgyaFdTGOfl", "1uO3mWpm6t0FgpQGRc6ZOsiohquyjOzIW", 
             "1qZb3bVLW79chVg3NJeamGcUWs1VZKKfb", "1AqUbW_40AiROPG6QKP9dbc7uB7Lq_1Gu",
@@ -107,14 +103,12 @@
             "1bYpxOYA9hxwSamQRRstar6dYQzut69a4"
         ].map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
 
-        // --- 2. CURSOR LOGIC ---
         const cursor = document.getElementById('custom-cursor');
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // --- 3. AUTO-COLLAGE ---
         const collageContainer = document.getElementById('collage');
         myImages.forEach((url) => {
             const img = document.createElement('img');
@@ -126,23 +120,28 @@
             collageContainer.appendChild(img);
         });
 
-        // --- 4. BUTTON INTERACTION ---
         let scale = 1;
         function moveNo() {
             const noBtn = document.getElementById('noBtn');
             const yesBtn = document.getElementById('yesBtn');
-            noBtn.style.position = 'absolute';
+            
+            // Unlimited moving for "No"
+            noBtn.style.position = 'fixed'; // Use fixed so it moves anywhere on screen
             noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
             noBtn.style.top = Math.random() * (window.innerHeight - 100) + 'px';
-            scale += 0.4;
+            
+            // "Yes" button takes over
+            scale += 0.5; // Increases growth rate
             yesBtn.style.transform = `scale(${scale})`;
         }
 
         function celebrate() {
             document.getElementById('question').style.display = 'none';
             document.getElementById('btnGroup').style.display = 'none';
+            document.getElementById('mainCard').style.backgroundColor = 'transparent';
+            document.getElementById('mainCard').style.boxShadow = 'none';
             document.getElementById('successMsg').style.display = 'block';
-            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#ff4d6d', '#ffffff'] });
+            confetti({ particleCount: 300, spread: 150, origin: { y: 0.6 } });
         }
     </script>
 </body>
