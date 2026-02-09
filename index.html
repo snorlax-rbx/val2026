@@ -3,47 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Question ❤️</title>
+    <title>A Special Question for my lady❤️</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
             background-color: #ffcad4;
-            margin: 0;
-            height: 100vh;
-            width: 100vw;
+            margin: 0; height: 100vh; width: 100vw;
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Prevents scrollbars from appearing */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
             cursor: none; 
         }
 
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffcad4; z-index: 20000;
+            display: flex; align-items: center; justify-content: center;
+        }
+
         #custom-cursor {
-            position: fixed;
-            top: 0; left: 0; width: 30px; height: 30px;
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d90429"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
             background-size: contain; background-repeat: no-repeat;
             pointer-events: none; z-index: 10000; transform: translate(-50%, -50%);
+            display: none;
         }
 
-        #collage {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-        }
+        #collage { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
         .collage-photo {
-            position: absolute;
-            width: 150px; height: 150px;
+            position: absolute; width: 150px; height: 150px;
             object-fit: cover; border: 6px solid white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             border-radius: 2px; background-color: white;
         }
 
         .card {
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 10;
             background: rgba(255, 255, 255, 0.9);
             padding: 40px; border-radius: 30px;
             text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
@@ -51,41 +47,46 @@
         }
 
         h1 { color: #d90429; font-size: 1.8rem; }
-        
-        .buttons {
-            display: flex; justify-content: center;
-            gap: 20px; align-items: center; margin-top: 20px;
-        }
+        .buttons { display: flex; justify-content: center; gap: 20px; align-items: center; margin-top: 20px; min-height: 100px; }
 
         button {
-            padding: 15px 25px; font-size: 1.1rem;
-            border: none; border-radius: 50px;
-            cursor: none; font-weight: bold;
-            transition: transform 0.1s ease-out;
+            padding: 15px 25px; font-size: 1.1rem; border: none; border-radius: 50px;
+            font-weight: bold; cursor: pointer; transition: transform 0.1s ease-out;
         }
 
         #yesBtn { background-color: #d90429; color: white; z-index: 999; }
-        #noBtn { background-color: #8d99ae; color: white; position: fixed; z-index: 998; }
+        #noBtn { background-color: #8d99ae; color: white; z-index: 998; position: relative; }
         #successMsg { display: none; color: #d90429; font-size: 2rem; font-weight: bold; }
-        
-        #youtube-player { position: absolute; visibility: hidden; width: 1px; height: 1px; }
+
+        /* Mute Button Style */
+        #muteBtn {
+            position: fixed; bottom: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10001; font-size: 20px; cursor: pointer;
+            display: none; /* Only show after start */
+        }
     </style>
 </head>
 <body>
 
+    <div id="overlay">
+        <button onclick="startExperience()" style="background:#d90429; color:white;">Click to Open ❤️</button>
+    </div>
+
+    <div id="muteBtn" onclick="toggleMute()">🔊</div>
+
+    <audio id="myAudio" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="custom-cursor"></div>
     <div id="collage"></div>
 
-    <div id="youtube-player">
-        <iframe id="music-video" width="1" height="1" 
-        src="https://www.youtube.com/embed/ytpdce0X-Do?enablejsapi=1&autoplay=1&loop=1&playlist=ytpdce0X-Do" 
-        frameborder="0" allow="autoplay"></iframe>
-    </div>
-
     <div class="card" id="mainCard">
-        <h1 id="question">Will you be my Valentine? ❤️</h1>
-        <div id="successMsg">I LOVE YOU! 🥰✨</div>
-        
+        <h1 id="question">Hi my Love, Will you be my Valentine? ❤️</h1>
+        <div id="successMsg">I LOVE YOU so much! SEE YOU SOON BB 🥰✨</div>
         <div class="buttons" id="btnGroup">
             <button id="yesBtn" onclick="celebrate()">YES</button>
             <button id="noBtn" onmouseover="moveNo()">No</button>
@@ -93,6 +94,7 @@
     </div>
 
     <script>
+        // Google Drive Image IDs as placeholders (Ensure Drive link sharing is ON)
         const myImages = [
             "1TZIZow88MIW-Am1Tbwc_acgyaFdTGOfl", "1uO3mWpm6t0FgpQGRc6ZOsiohquyjOzIW", 
             "1qZb3bVLW79chVg3NJeamGcUWs1VZKKfb", "1AqUbW_40AiROPG6QKP9dbc7uB7Lq_1Gu",
@@ -104,17 +106,30 @@
             "1bYpxOYA9hxwSamQRRstar6dYQzut69a4"
         ].map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
 
-        const cursor = document.getElementById('custom-cursor');
-        let musicStarted = false;
+        const audio = document.getElementById('myAudio');
+        const muteBtn = document.getElementById('muteBtn');
+
+        function startExperience() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('custom-cursor').style.display = 'block';
+            muteBtn.style.display = 'flex';
+            audio.play();
+        }
+
+        function toggleMute() {
+            if (audio.muted) {
+                audio.muted = false;
+                muteBtn.innerText = "🔊";
+            } else {
+                audio.muted = true;
+                muteBtn.innerText = "🔇";
+            }
+        }
 
         document.addEventListener('mousemove', (e) => {
+            const cursor = document.getElementById('custom-cursor');
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
-            if (!musicStarted) {
-                const iframe = document.getElementById('music-video');
-                iframe.src += "&autoplay=1";
-                musicStarted = true;
-            }
         });
 
         const collageContainer = document.getElementById('collage');
@@ -132,20 +147,16 @@
         function moveNo() {
             const noBtn = document.getElementById('noBtn');
             const yesBtn = document.getElementById('yesBtn');
+            noBtn.style.position = 'fixed';
             
-            // Calculate safe boundaries
-            const padding = 20; 
+            const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-            // Generate coordinates within safe screen space
-            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+            noBtn.style.left = Math.max(padding, Math.random() * maxX) + 'px';
+            noBtn.style.top = Math.max(padding, Math.random() * maxY) + 'px';
 
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-
-            scale += 0.6;
+            scale += 0.5;
             yesBtn.style.transform = `scale(${scale})`;
         }
 
