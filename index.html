@@ -10,8 +10,9 @@
             background-color: #ffcad4;
             margin: 0;
             height: 100vh;
+            width: 100vw;
             font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            overflow: hidden; /* Prevents scrollbars from appearing */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -60,26 +61,26 @@
             padding: 15px 25px; font-size: 1.1rem;
             border: none; border-radius: 50px;
             cursor: none; font-weight: bold;
-            transition: transform 0.1s ease-out; /* Smooth growth */
+            transition: transform 0.1s ease-out;
         }
 
-        #yesBtn { 
-            background-color: #d90429; color: white; 
-            z-index: 999; /* Higher than card but lower than cursor */
-        }
-
-        #noBtn { 
-            background-color: #8d99ae; color: white; 
-            position: relative; z-index: 998;
-        }
-
+        #yesBtn { background-color: #d90429; color: white; z-index: 999; }
+        #noBtn { background-color: #8d99ae; color: white; position: fixed; z-index: 998; }
         #successMsg { display: none; color: #d90429; font-size: 2rem; font-weight: bold; }
+        
+        #youtube-player { position: absolute; visibility: hidden; width: 1px; height: 1px; }
     </style>
 </head>
 <body>
 
     <div id="custom-cursor"></div>
     <div id="collage"></div>
+
+    <div id="youtube-player">
+        <iframe id="music-video" width="1" height="1" 
+        src="https://www.youtube.com/embed/ytpdce0X-Do?enablejsapi=1&autoplay=1&loop=1&playlist=ytpdce0X-Do" 
+        frameborder="0" allow="autoplay"></iframe>
+    </div>
 
     <div class="card" id="mainCard">
         <h1 id="question">Will you be my Valentine? ❤️</h1>
@@ -104,9 +105,16 @@
         ].map(id => `https://drive.google.com/thumbnail?id=${id}&sz=w1000`);
 
         const cursor = document.getElementById('custom-cursor');
+        let musicStarted = false;
+
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
+            if (!musicStarted) {
+                const iframe = document.getElementById('music-video');
+                iframe.src += "&autoplay=1";
+                musicStarted = true;
+            }
         });
 
         const collageContainer = document.getElementById('collage');
@@ -114,8 +122,8 @@
             const img = document.createElement('img');
             img.src = url;
             img.className = 'collage-photo';
-            img.style.left = Math.random() * 85 + '%';
-            img.style.top = Math.random() * 85 + '%';
+            img.style.left = Math.random() * 80 + '%';
+            img.style.top = Math.random() * 80 + '%';
             img.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
             collageContainer.appendChild(img);
         });
@@ -125,13 +133,19 @@
             const noBtn = document.getElementById('noBtn');
             const yesBtn = document.getElementById('yesBtn');
             
-            // Unlimited moving for "No"
-            noBtn.style.position = 'fixed'; // Use fixed so it moves anywhere on screen
-            noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            noBtn.style.top = Math.random() * (window.innerHeight - 100) + 'px';
-            
-            // "Yes" button takes over
-            scale += 0.5; // Increases growth rate
+            // Calculate safe boundaries
+            const padding = 20; 
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            // Generate coordinates within safe screen space
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            scale += 0.6;
             yesBtn.style.transform = `scale(${scale})`;
         }
 
